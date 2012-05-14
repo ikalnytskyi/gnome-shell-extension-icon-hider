@@ -17,45 +17,100 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const St = imports.gi.St;
+// aliases
 const Main = imports.ui.main;
-const Lang = imports.lang;
 const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
 
+// global consts
+const EXTENSION_NAME = 'Icon Manager';
 
-function IconManagerExtension() {
-    this._init();
+
+/*
+ * Indicator definition.
+ *
+ * Create item in StatusArea panel. Provide menu for manipulating
+ * visiblity of other icons.
+ */
+
+function Indicator() {
+    this._init.apply(this, arguments);
 }
 
-IconManagerExtension.prototype = {
+
+Indicator.prototype = {
     __proto__: PanelMenu.SystemStatusButton.prototype,
 
     _init: function() {
         PanelMenu.SystemStatusButton.prototype._init.call(this,
-            'edit-select-all-symbolic');
-
-        this._myItem = new PopupMenu.PopupMenuItem('Item #1');
-        this.menu.addMenuItem(this._myItem);
+            'edit-select-all-symbolic', null);
+        this._createMenu();
     },
 
     _createMenu: function() {
+        for (let item in Main.panel._statusArea) {
+            // don't add myself
+            if (item == EXTENSION_NAME)
+                continue;
 
-        this._menuItems = [];
-        this._menuItems[0] = new PopupMenu.PopupSwitchMenuItem('Item #1');
-        //this._killSwitch.connect('toggled', Lang.bind(this, this._toggleDaemon));
+            // create menu item
+            let menuItem = new PopupMenu.PopupSwitchMenuItem(item, true);
+            menuItem.connect('toggled', this._toggleItem);
+            this.menu.addMenuItem(menuItem);
+
+            // add reference to real status area item.
+            // this ref need for access to actor
+            menuItem['statusAreaItem'] = Main.panel._statusArea[item];
+        }
     },
 
-    enable: function() {
-        Main.panel._rightBox.insert_actor(this.actor, 0);
+    // show/hide statusarea's item
+    _toggleItem: function(menuItem) {
+        if (menuItem.state)
+            menuItem.statusAreaItem.actor.show();
+        else
+            menuItem.statusAreaItem.actor.hide();
     },
 
-    disable: function() {
-        Main.panel._rightBox.remove_actor(this.actor);
+    _showStatusAreaItems: function() {
+        for (let item in Main.panel._statusArea)
+            Main.panel._statusArea[item].actor.show();
     }
 };
 
 
+/*
+ * Extension definition.
+ *
+ * Wrapper for Indicator.
+ */
+
+function Extension() {
+    this._init();
+}
+
+Extension.prototype = {
+    _init: function() {
+        this._indicator = null;
+    },
+
+    enable: function() {
+        this._indicator = new Indicator();
+        Main.panel.addToStatusArea(EXTENSION_NAME, this._indicator);
+    },
+
+    disable: function() {
+        this._indicator._showStatusAreaItems();
+        this._indicator.destroy();
+    }
+};
+
+
+/**
+ * Entry point.
+ *
+ * Should return an object with callable `enable` and `disable` properties.
+ */
 function init() {
-    return new IconManagerExtension();
+    return new Extension();
 }
