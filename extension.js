@@ -42,8 +42,7 @@ Indicator.prototype = {
     __proto__: PanelMenu.SystemStatusButton.prototype,
 
     _init: function() {
-        PanelMenu.SystemStatusButton.prototype._init.call(this,
-            'edit-select-all-symbolic', null);
+        PanelMenu.SystemStatusButton.prototype._init.call(this, 'view-grid');
         this._createMenu();
     },
 
