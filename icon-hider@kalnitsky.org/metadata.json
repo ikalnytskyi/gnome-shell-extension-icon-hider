@@ -1,1 +1,1 @@
-{    "shell-version": ["3.4"],    "uuid": "icon-hider@kalnitsky.org",    "name": "Icon Hider",    "description": "Show/Hide icons from top panel",    "url": "http://www.kalnitsky.org/projects/icon-hider/",    "version": 1}
+{    "shell-version": ["3.4"],    "uuid": "icon-hider@kalnitsky.org",    "name": "Icon Hider",    "description": "Show/Hide icons from top panel",    "url": "https://github.com/ikalnitsky/gnome-shell-extension-icon-hider",    "version": "0.1"}
