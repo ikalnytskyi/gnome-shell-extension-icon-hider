@@ -5,7 +5,7 @@ Icon Hider for Gnome Shell
 This extension create a special menu by which you can change visibility of
 desired item.
 
-    **NOTE:** This extension can't hide *battery* icon, because last one
+    **NOTE:** This extension can't hide 'battery' icon, because last one
     has a very ugly design with strange behaviour.
 
 .. image:: http://i.imm.io/sklW.png
