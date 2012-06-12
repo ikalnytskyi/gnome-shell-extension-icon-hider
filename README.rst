@@ -14,15 +14,15 @@ desired item.
 Requirements
 ------------
 
-**Icon Hider** require *gnome-shell 3.4* or higher. This is due to the fact that
-the extension uses the *settings api* which introduced in *gnome-shell 3.4*.
+**Icon Hider** require «gnome-shell 3.4» or higher. This is due to the fact that
+the extension uses the «settings api» which introduced in «gnome-shell 3.4».
 
 
 Installation
 ------------
 
 #. Clone repository.
-#. Place or link ``icon-hider@kalnitsky.org`` directory to
+#. Copy (or link) ``icon-hider@kalnitsky.org`` directory to
    ``~/.local/share/gnome-shell/extensions/``.
 #. Activate extension via ``gnome-tweak-tool``.
 
