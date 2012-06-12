@@ -2,7 +2,7 @@
 <schemalist gettext-domain="gnome-shell-extensions">
   <schema id="org.gnome.shell.extensions.icon-hider" path="/org/gnome/shell/extensions/icon-hider/">
     <key type="as" name="hided-icons">
-      <default>['a11y']</default>
+      <default>[]</default>
       <summary>Remove icon from top bar</summary>
       <description>List of icons that will be removed from top panel.</description>
     </key>
