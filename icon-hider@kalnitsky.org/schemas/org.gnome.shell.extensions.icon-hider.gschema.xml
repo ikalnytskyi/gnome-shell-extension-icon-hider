@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="gnome-shell-extensions">
   <schema id="org.gnome.shell.extensions.icon-hider" path="/org/gnome/shell/extensions/icon-hider/">
+    <key type="as" name="seen-icons">
+      <default>[]</default>
+      <summary>All seen icons</summary>
+      <description>All icons was detected by extenstion. This will be overwritten at start and runtime.</description>
+    </key>
     <key type="as" name="hided-icons">
       <default>[]</default>
       <summary>Remove icon from top bar</summary>
