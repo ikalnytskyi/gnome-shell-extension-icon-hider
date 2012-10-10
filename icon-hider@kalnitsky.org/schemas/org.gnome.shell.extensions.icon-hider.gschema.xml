@@ -1,10 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="gnome-shell-extensions">
   <schema id="org.gnome.shell.extensions.icon-hider" path="/org/gnome/shell/extensions/icon-hider/">
-    <key type="as" name="hided-icons">
+
+    <key type="as" name="hidden">
       <default>[]</default>
-      <summary>Remove icon from top bar</summary>
-      <description>List of icons that will be removed from top panel.</description>
+      <summary>Hide this icons from top panel.</summary>
     </key>
+
+    <key type="as" name="known">
+      <default>[]</default>
+      <summary>Show this icons in the preferences dialog.</summary>
+    </key>
+
+    <key type="as" name="exceptions">
+      <default>['battery', 'message-notifier']</default>
+      <summary>Not show this icons in the Icon Hider list.</summary>
+    </key>
+
+    <key type="b" name="is-indicator-shown">
+      <default>true</default>
+      <summary>Show or not the extension's indicator in the top panel.</summary>
+    </key>
+
+    <key type="b" name="is-username-shown">
+      <default>true</default>
+      <summary>Show or not a username in the userMenu area.</summary>
+    </key>
+
   </schema>
 </schemalist>

@@ -1,33 +1,40 @@
 /*
- * Icon Hider extension for Gnome Shell.
- *
  * Copyright 2012 Igor Kalnitsky <igor@kalnitsky.org>
  *
- * This program is free software: you can redistribute it and/or modify
+ * This file is part of Icon Hider for Gnome Shell.
+ *
+ * Icon Hider is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * Icon Hider is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Icon Hider Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// aliases
-const Gio = imports.gi.Gio
-const Main = imports.ui.main
-const Panel = imports.ui.panel
-const PopupMenu = imports.ui.popupMenu
-const PanelMenu = imports.ui.panelMenu
+const Lang = imports.lang;
+const Main = imports.ui.main;
+const PopupMenu = imports.ui.popupMenu;
+const PanelMenu = imports.ui.panelMenu;
+
+const Me = imports.misc.extensionUtils.getCurrentExtension();
+const Convenience = Me.imports.convenience;
+
 
 // global consts
-const EXTENSION_NAME = 'Icon Hider'
-const GSETTINGS_SCHEMA = 'org.gnome.shell.extensions.icon-hider'
-const GSETTINGS_HIDE_KEY = 'hided-icons'
+const EXTENSION_NAME = 'Icon Hider';
+const GSETTINGS = {
+    HIDDEN:             'hidden',
+    KNOWN:              'known',
+    EXCEPTIONS:         'exceptions',
+    IS_INDICATOR_SHOWN: 'is-indicator-shown',
+    IS_USERNAME_SHOWN:  'is-username-shown'
+};
 
 
 /*
@@ -38,7 +45,7 @@ const GSETTINGS_HIDE_KEY = 'hided-icons'
  */
 
 function Indicator() {
-    this._init.apply(this, arguments)
+    this._init.apply(this, arguments);
 }
 
 
@@ -49,67 +56,34 @@ Indicator.prototype = {
      * Constructor
      */
     _init: function() {
-        PanelMenu.SystemStatusButton.prototype._init.call(this, 'view-grid')
+        PanelMenu.SystemStatusButton.prototype._init.call(this, 'view-grid');
+        Main.panel.addToStatusArea(EXTENSION_NAME, this);
 
-        // exceptions are not show in menu
-        this._exceptions = ['battery', 'message-notifier']
-
-        this._initSettings()
-        this._createMenu()
-    },
-
-    /**
-     * Get settings instance and save it as `this._settings`
-     */
-    _initSettings: function() {
-        let extension = imports.misc.extensionUtils.getCurrentExtension()
-
-        let src = Gio.SettingsSchemaSource.new_from_directory(
-            extension.dir.get_child('schemas').get_path(),
-            Gio.SettingsSchemaSource.get_default(),
-            false
-        )
-
-        this._settings = new Gio.Settings({
-            settings_schema: src.lookup(GSETTINGS_SCHEMA, false)
-        })
+        this._settings = Convenience.getSettings();
+        this._createMenu();
     },
 
     /**
      * Create menu in top bar.
      */
     _createMenu: function() {
-        let hiddenItems = this._settings.get_strv(GSETTINGS_HIDE_KEY)
+        let knownItems = this._settings.get_strv(GSETTINGS.KNOWN);
+        let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
 
-        for (let item in Main.panel._statusArea) {
-            // don't add myself
-            if (item == EXTENSION_NAME)
-                continue
-            // don't add exceptions (this is items not works correctly)
-            if (this._exceptions.indexOf(item) != -1)
-                continue
-
-            let isHidden = (hiddenItems.indexOf(item) != -1)
-
+        for each (let item in knownItems) {
             // create menu item
-            let menuItem = new PopupMenu.PopupSwitchMenuItem(item, !isHidden)
-            this.menu.addMenuItem(menuItem)
+            let isHidden = (hiddenItems.indexOf(item) != -1);
+            let menuItem = new PopupMenu.PopupSwitchMenuItem(item, !isHidden);
+            this.menu.addMenuItem(menuItem);
 
-            // add reference to real status area item.
-            // this ref need for access to actor
-            menuItem.statusAreaItem = Main.panel._statusArea[item]
-            menuItem.statusAreaKey = item
-
-            if (isHidden)
-                this._hideItem(menuItem)
+            menuItem.statusAreaKey = item;
 
             // set handler
-            let $this = this
-            menuItem.connect('toggled', function (item) {
+            menuItem.connect('toggled', Lang.bind(this, function (item) {
                 item.state == false
-                    ? $this._hideItem(item)
-                    : $this._showItem(item)
-            })
+                    ? this._hideItem(item)
+                    : this._showItem(item);
+            }));
         }
     },
 
@@ -117,49 +91,32 @@ Indicator.prototype = {
      * Hide element and mark it as hidden in settings.
      */
     _hideItem: function (item) {
-        let hiddenItems = this._settings.get_strv(GSETTINGS_HIDE_KEY)
+        let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
 
         if (hiddenItems.indexOf(item.statusAreaKey) == -1) {
-            hiddenItems.push(item.statusAreaKey)
-            this._settings.set_strv(GSETTINGS_HIDE_KEY, hiddenItems)
+            hiddenItems.push(item.statusAreaKey);
+            this._settings.set_strv(GSETTINGS.HIDDEN, hiddenItems);
         }
-
-        item.statusAreaItem.actor.hide()
     },
 
     /**
      * Show element and mark it as visible in settings.
      */
     _showItem: function (item) {
-        let hiddenItems = this._settings.get_strv(GSETTINGS_HIDE_KEY)
-        let index = hiddenItems.indexOf(item.statusAreaKey)
+        let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
+        let index = hiddenItems.indexOf(item.statusAreaKey);
 
         while (index != -1) {
-            hiddenItems.splice(index, 1)
-            this._settings.set_strv(GSETTINGS_HIDE_KEY, hiddenItems)
-            index = hiddenItems.indexOf(item.statusAreaKey)
+            hiddenItems.splice(index, 1);
+            this._settings.set_strv(GSETTINGS.HIDDEN, hiddenItems);
+            index = hiddenItems.indexOf(item.statusAreaKey);
         }
-
-        item.statusAreaItem.actor.show()
-    },
-
-    /**
-     * Mark all elements as visible.
-     * Used when extension is deactivating.
-     */
-    _showStatusAreaItems: function () {
-        let menuItems = this.menu._getMenuItems()
-
-        for (let index in menuItems)
-            menuItems[index].statusAreaItem.actor.show()
     }
 }
 
 
 /*
  * Extension definition.
- *
- * Wrapper for Indicator.
  */
 
 function Extension() {
@@ -169,17 +126,84 @@ function Extension() {
 Extension.prototype = {
     _init: function() {
         this._indicator = null;
+        this._settings = Convenience.getSettings();
+        this._statusArea = Main.panel._statusArea;
     },
 
     enable: function() {
-        this._indicator = new Indicator();
-        Main.panel.addToStatusArea(EXTENSION_NAME, this._indicator);
+        // save signal id (should be used for disconnecting in `destroy()`)
+        this._settingsSignal =
+            this._settings.connect('changed::', Lang.bind(this, this._reloadSettings));
+        this._loadSettings();
     },
 
+    /**
+     * Clean-up:
+     *   - restore icons' visibility
+     *   - disconnect settings signal
+     *   - destroy indicator
+     */
     disable: function() {
-        this._indicator._showStatusAreaItems();
+        // restore visibility
+        let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
+        for each (let item in hiddenItems)
+            if (item in this._statusArea)
+                this._statusArea[item].actor.show();
+
         this._indicator.destroy();
         this._indicator = null;
+        this._settings.disconnect(this._settingsSignal);
+    },
+
+    /**
+     * This function is called when settings are changed.
+     */
+    _reloadSettings: function() {
+        this.disable();
+        this.enable();
+    },
+
+    /**
+     * Load settings:
+     *   - scan for icons
+     *   - show/hide username
+     *   - create and show/hide indicator
+     */
+    _loadSettings: function() {
+        // load visibility
+        let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
+        let knownItems = this._settings.get_strv(GSETTINGS.KNOWN);
+        let exceptionsItems = this._settings.get_strv(GSETTINGS.EXCEPTIONS);
+
+        for (let item in this._statusArea) {
+            // skip exceptions (this items don't works correctly)
+            if (exceptionsItems.indexOf(item) != -1 || item === EXTENSION_NAME)
+                continue;
+
+            // add to known icons (used by prefs.js and indicator)
+            if (knownItems.indexOf(item) == -1)
+                knownItems.push(item);
+
+            // set icon visibility
+            hiddenItems.indexOf(item) != -1
+                ? this._statusArea[item].actor.hide()
+                : this._statusArea[item].actor.show();
+        }
+
+        // create indicator
+        this._indicator = new Indicator();
+
+        // load utilities settings
+        let isIndicatorShown = this._settings.get_boolean(GSETTINGS.IS_INDICATOR_SHOWN);
+        let isUsernameShown = this._settings.get_boolean(GSETTINGS.IS_USERNAME_SHOWN);
+
+        isIndicatorShown
+            ? this._indicator.actor.show()
+            : this._indicator.actor.hide();
+
+        isUsernameShown
+            ? this._statusArea.userMenu._name.show()
+            : this._statusArea.userMenu._name.hide();
     }
 };
 
