@@ -70,6 +70,7 @@ Indicator.prototype = {
         let knownItems = this._settings.get_strv(GSETTINGS.KNOWN);
         let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
 
+        // create switchers list
         for each (let item in knownItems) {
             // create menu item
             let isHidden = (hiddenItems.indexOf(item) != -1);
@@ -85,6 +86,16 @@ Indicator.prototype = {
                     : this._showItem(item);
             }));
         }
+
+        // create service items
+        this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+
+        let settingsItem = new PopupMenu.PopupMenuItem('Settings');
+        settingsItem.connect('activate', Lang.bind(this, function() {
+            var runPrefs = 'gnome-shell-extension-prefs ' + Me.metadata.uuid;
+            Main.Util.trySpawnCommandLine(runPrefs);
+        }));
+        this.menu.addMenuItem(settingsItem);
     },
 
     /**
