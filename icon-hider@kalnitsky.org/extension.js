@@ -142,10 +142,44 @@ Extension.prototype = {
     },
 
     enable: function() {
+        // load visibility
+        let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
+        let knownItems = this._settings.get_strv(GSETTINGS.KNOWN);
+        let exceptionsItems = this._settings.get_strv(GSETTINGS.EXCEPTIONS);
+
+        for (let item in this._statusArea) {
+            // skip exceptions (this items don't works correctly)
+            if (exceptionsItems.indexOf(item) != -1 || item === EXTENSION_NAME)
+                continue;
+
+            // add to known icons (used by prefs.js and indicator)
+            if (knownItems.indexOf(item) == -1)
+                knownItems.push(item);
+
+            // set icon visibility
+            hiddenItems.indexOf(item) != -1
+                ? this._statusArea[item].actor.hide()
+                : this._statusArea[item].actor.show();
+        }
+        this._settings.set_strv(GSETTINGS.KNOWN, knownItems);
+
+        // create indicator
+        this._indicator = new Indicator();
+
+        // load utilities settings
+        let isIndicatorShown = this._settings.get_boolean(GSETTINGS.IS_INDICATOR_SHOWN);
+        let isUsernameShown = this._settings.get_boolean(GSETTINGS.IS_USERNAME_SHOWN);
+
+        isIndicatorShown
+            ? this._indicator.actor.show()
+            : this._indicator.actor.hide();
+
+        isUsernameShown
+            ? this._statusArea.userMenu._name.show()
+            : this._statusArea.userMenu._name.hide();
         // save signal id (should be used for disconnecting in `destroy()`)
         this._settingsSignal =
             this._settings.connect('changed::', Lang.bind(this, this._reloadSettings));
-        this._loadSettings();
     },
 
     /**
@@ -172,49 +206,6 @@ Extension.prototype = {
     _reloadSettings: function() {
         this.disable();
         this.enable();
-    },
-
-    /**
-     * Load settings:
-     *   - scan for icons
-     *   - show/hide username
-     *   - create and show/hide indicator
-     */
-    _loadSettings: function() {
-        // load visibility
-        let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
-        let knownItems = this._settings.get_strv(GSETTINGS.KNOWN);
-        let exceptionsItems = this._settings.get_strv(GSETTINGS.EXCEPTIONS);
-
-        for (let item in this._statusArea) {
-            // skip exceptions (this items don't works correctly)
-            if (exceptionsItems.indexOf(item) != -1 || item === EXTENSION_NAME)
-                continue;
-
-            // add to known icons (used by prefs.js and indicator)
-            if (knownItems.indexOf(item) == -1)
-                knownItems.push(item);
-
-            // set icon visibility
-            hiddenItems.indexOf(item) != -1
-                ? this._statusArea[item].actor.hide()
-                : this._statusArea[item].actor.show();
-        }
-
-        // create indicator
-        this._indicator = new Indicator();
-
-        // load utilities settings
-        let isIndicatorShown = this._settings.get_boolean(GSETTINGS.IS_INDICATOR_SHOWN);
-        let isUsernameShown = this._settings.get_boolean(GSETTINGS.IS_USERNAME_SHOWN);
-
-        isIndicatorShown
-            ? this._indicator.actor.show()
-            : this._indicator.actor.hide();
-
-        isUsernameShown
-            ? this._statusArea.userMenu._name.show()
-            : this._statusArea.userMenu._name.hide();
     }
 };
 
