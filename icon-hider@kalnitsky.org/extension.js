@@ -56,7 +56,9 @@ Indicator.prototype = {
      * Constructor
      */
     _init: function() {
-        PanelMenu.SystemStatusButton.prototype._init.call(this, 'view-grid');
+        arguments[0] == "3.4" // check the shell version
+            ? PanelMenu.SystemStatusButton.prototype._init.call(this, 'view-grid')
+            : PanelMenu.SystemStatusButton.prototype._init.call(this, 'view-grid-symbolic');
         Main.panel.addToStatusArea(EXTENSION_NAME, this);
 
         this._settings = Convenience.getSettings();
@@ -138,7 +140,14 @@ Extension.prototype = {
     _init: function() {
         this._indicator = null;
         this._settings = Convenience.getSettings();
-        this._statusArea = Main.panel._statusArea;
+
+        if (Main.panel._statusArea) {
+            this._shellVersion = "3.4";
+            this._statusArea = Main.panel._statusArea;
+        } else {
+            this._shellVersion = "3.6";
+            this._statusArea = Main.panel.statusArea;
+        }
     },
 
     enable: function() {
@@ -164,7 +173,7 @@ Extension.prototype = {
         this._settings.set_strv(GSETTINGS.KNOWN, knownItems);
 
         // create indicator
-        this._indicator = new Indicator();
+        this._indicator = new Indicator(this._shellVersion);
 
         // load utilities settings
         let isIndicatorShown = this._settings.get_boolean(GSETTINGS.IS_INDICATOR_SHOWN);
