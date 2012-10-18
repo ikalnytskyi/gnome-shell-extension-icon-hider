@@ -31,6 +31,6 @@ Info
 
 * **Author:** Igor Kalnitsky <igor@kalnitsky.org>
 * **License:** GNU GPL v3
-* **Version:** 0.2
+* **Version:** 3
 
 .. _`Gnome Shell`: http://live.gnome.org/GnomeShell
