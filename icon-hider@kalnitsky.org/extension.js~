@@ -37,6 +37,7 @@ const GSETTINGS = {
     IS_USERNAME_SHOWN:  'is-username-shown'
 };
 
+let age;
 /*
  * Indicator definition.
  *
@@ -130,7 +131,6 @@ Indicator.prototype = {
 /*
  * Extension definition.
  */
-let age;
 
 function Extension() {
     this._init();
@@ -223,13 +223,14 @@ function init(metadata) {
     if (current_version.length != 3 || current_version[0] != 3) throw new Error("Strange version number (extension.js:223).");
     
     switch (current_version[1]) {
-        case"3": global.log("Warning of extension [" + metadata.uuid + "]:\n              Old development release detected (" + Config.PACKAGE_VERSION + "). You should upgrade!\n");   //eak
+        case"2": global.log("Warning of extension [" + metadata.uuid + "]:\n              Old development release detected (" + Config.PACKAGE_VERSION + "). You should upgrade!\n");   //eak
+        case"3": ;
         case"4": age = "old";
             break;
         case"5": global.log("Warning of extension [" + metadata.uuid + "]:\n              Development release detected (" + Config.PACKAGE_VERSION + "). Loading as a 3.6 release.\n"); //eak
         case"6": age = "new";
             break;
-        default: throw new Error("Strange version number (extension.js:232).");
+        default: throw new Error("Strange version number (extension.js:233).");
     }
     return new Extension();
 }
