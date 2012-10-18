@@ -18,6 +18,7 @@
  */
 
 const Lang = imports.lang;
+const Config = imports.misc.config
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
@@ -35,7 +36,6 @@ const GSETTINGS = {
     IS_INDICATOR_SHOWN: 'is-indicator-shown',
     IS_USERNAME_SHOWN:  'is-username-shown'
 };
-
 
 /*
  * Indicator definition.
@@ -56,7 +56,8 @@ Indicator.prototype = {
      * Constructor
      */
     _init: function() {
-        PanelMenu.SystemStatusButton.prototype._init.call(this, 'view-grid');
+        if (age=="old") PanelMenu.SystemStatusButton.prototype._init.call(this, 'view-grid');
+        else            PanelMenu.SystemStatusButton.prototype._init.call(this, 'view-grid-symbolic');
         Main.panel.addToStatusArea(EXTENSION_NAME, this);
 
         this._settings = Convenience.getSettings();
@@ -129,6 +130,7 @@ Indicator.prototype = {
 /*
  * Extension definition.
  */
+let age;
 
 function Extension() {
     this._init();
@@ -138,7 +140,8 @@ Extension.prototype = {
     _init: function() {
         this._indicator = null;
         this._settings = Convenience.getSettings();
-        this._statusArea = Main.panel._statusArea;
+        if (age=="old") this._statusArea = Main.panel._statusArea;
+        else            this._statusArea = Main.panel.statusArea;
     },
 
     enable: function() {
@@ -215,6 +218,18 @@ Extension.prototype = {
  *
  * Should return an object with callable `enable` and `disable` properties.
  */
-function init() {
+function init(metadata) {
+    let current_version = Config.PACKAGE_VERSION.split('.');
+    if (current_version.length != 3 || current_version[0] != 3) throw new Error("Strange version number (extension.js:223).");
+    
+    switch (current_version[1]) {
+        case"3": global.log("Warning of extension [" + metadata.uuid + "]:\n              Old development release detected (" + Config.PACKAGE_VERSION + "). You should upgrade!\n");   //eak
+        case"4": age = "old";
+            break;
+        case"5": global.log("Warning of extension [" + metadata.uuid + "]:\n              Development release detected (" + Config.PACKAGE_VERSION + "). Loading as a 3.6 release.\n"); //eak
+        case"6": age = "new";
+            break;
+        default: throw new Error("Strange version number (extension.js:232).");
+    }
     return new Extension();
 }
