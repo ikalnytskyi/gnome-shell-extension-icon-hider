@@ -19,6 +19,7 @@
 
 const Lang = imports.lang;
 const Main = imports.ui.main;
+const Mainloop = imports.mainloop;
 const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
 
@@ -28,6 +29,7 @@ const Convenience = Me.imports.convenience;
 
 // global consts
 const EXTENSION_NAME = 'Icon Hider';
+const EXTENSION_REFRESH_INTERVAL = 2000;
 const GSETTINGS = {
     HIDDEN:             'hidden',
     KNOWN:              'known',
@@ -152,25 +154,7 @@ Extension.prototype = {
 
     enable: function() {
         // load visibility
-        let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
-        let knownItems = this._settings.get_strv(GSETTINGS.KNOWN);
-        let exceptionsItems = this._settings.get_strv(GSETTINGS.EXCEPTIONS);
-
-        for (let item in this._statusArea) {
-            // skip exceptions (this items don't works correctly)
-            if (exceptionsItems.indexOf(item) != -1 || item === EXTENSION_NAME)
-                continue;
-
-            // add to known icons (used by prefs.js and indicator)
-            if (knownItems.indexOf(item) == -1)
-                knownItems.push(item);
-
-            // set icon visibility
-            hiddenItems.indexOf(item) != -1
-                ? this._statusArea[item].actor.hide()
-                : this._statusArea[item].actor.show();
-        }
-        this._settings.set_strv(GSETTINGS.KNOWN, knownItems);
+        this._refreshIndicators();
 
         // create indicator
         this._indicator = new Indicator(this._shellVersion);
@@ -186,9 +170,14 @@ Extension.prototype = {
         isUsernameShown
             ? this._statusArea.userMenu._name.show()
             : this._statusArea.userMenu._name.hide();
+
         // save signal id (should be used for disconnecting in `destroy()`)
         this._settingsSignal =
             this._settings.connect('changed::', Lang.bind(this, this._reloadSettings));
+
+        // start refresh timer
+        this._timer = Mainloop.timeout_add(EXTENSION_REFRESH_INTERVAL,
+            Lang.bind(this, this._refreshIndicators));
     },
 
     /**
@@ -207,6 +196,7 @@ Extension.prototype = {
         this._indicator.destroy();
         this._indicator = null;
         this._settings.disconnect(this._settingsSignal);
+        Mainloop.source_remove(this._timer);
     },
 
     /**
@@ -215,6 +205,34 @@ Extension.prototype = {
     _reloadSettings: function() {
         this.disable();
         this.enable();
+    },
+
+    _refreshIndicators: function() {
+        // load visibility
+        let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
+        let knownItems = this._settings.get_strv(GSETTINGS.KNOWN);
+        let exceptionsItems = this._settings.get_strv(GSETTINGS.EXCEPTIONS);
+
+        let isKnownItemsChanged = false;
+        for (let item in this._statusArea) {
+            // skip exceptions (this items don't works correctly)
+            if (exceptionsItems.indexOf(item) != -1 || item === EXTENSION_NAME)
+                continue;
+
+            // add to known icons (used by prefs.js and indicator)
+            if (knownItems.indexOf(item) == -1) {
+                knownItems.push(item);
+                isKnownItemsChanged = true;
+            }
+
+            // set icon visibility
+            hiddenItems.indexOf(item) != -1
+                ? this._statusArea[item].actor.hide()
+                : this._statusArea[item].actor.show();
+        }
+
+        if (isKnownItemsChanged)
+            this._settings.set_strv(GSETTINGS.KNOWN, knownItems);
     }
 };
 
