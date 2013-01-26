@@ -29,7 +29,6 @@ const Convenience = Me.imports.convenience;
 
 // global consts
 const EXTENSION_NAME = 'Icon Hider';
-const EXTENSION_REFRESH_INTERVAL = 2000;
 const GSETTINGS = {
     HIDDEN:             'hidden',
     KNOWN:              'known',
@@ -174,10 +173,6 @@ Extension.prototype = {
         // save signal id (should be used for disconnecting in `destroy()`)
         this._settingsSignal =
             this._settings.connect('changed::', Lang.bind(this, this._reloadSettings));
-
-        // start refresh timer
-        this._timer = Mainloop.timeout_add(EXTENSION_REFRESH_INTERVAL,
-            Lang.bind(this, this._refreshIndicators));
     },
 
     /**
@@ -196,7 +191,6 @@ Extension.prototype = {
         this._indicator.destroy();
         this._indicator = null;
         this._settings.disconnect(this._settingsSignal);
-        Mainloop.source_remove(this._timer);
     },
 
     /**
