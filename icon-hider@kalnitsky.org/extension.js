@@ -26,6 +26,8 @@ const PanelMenu = imports.ui.panelMenu;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 
+const Gettext = imports.gettext.domain('org.gnome.shell.extensions.icon-hider');
+const _ = Gettext.gettext;
 
 // global consts
 const EXTENSION_NAME = 'Icon Hider';
@@ -93,7 +95,7 @@ Indicator.prototype = {
         // create service items
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-        let settingsItem = new PopupMenu.PopupMenuItem('Settings');
+        let settingsItem = new PopupMenu.PopupMenuItem(_("Settings"));
         settingsItem.connect('activate', Lang.bind(this, function() {
             var runPrefs = 'gnome-shell-extension-prefs ' + Me.metadata.uuid;
             Main.Util.trySpawnCommandLine(runPrefs);
@@ -237,5 +239,6 @@ Extension.prototype = {
  * Should return an object with callable `enable` and `disable` properties.
  */
 function init() {
+    Convenience.initTranslations("org.gnome.shell.extensions.icon-hider");
     return new Extension();
 }
