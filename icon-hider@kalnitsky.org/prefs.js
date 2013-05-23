@@ -24,6 +24,9 @@ const Lang = imports.lang;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 
+const Gettext = imports.gettext.domain('org.gnome.shell.extensions.icon-hider');
+const _ = Gettext.gettext;
+
 const GSETTINGS = {
     HIDDEN:             'hidden',
     KNOWN:              'known',
@@ -50,7 +53,7 @@ const SettingsWidget = new GObject.Class({
     },
 
     _initShowHideIconsTab: function(notebook) {
-        let title = new Gtk.Label({label: "Show/Hide icons"});
+        let title = new Gtk.Label({label: _("Show/Hide icons")});
         let page = new Gtk.Grid({margin: 10, vexpand: true});
 
         let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
@@ -87,7 +90,7 @@ const SettingsWidget = new GObject.Class({
 
 
     _initUtilitiesTab: function(notebook) {
-        let title = new Gtk.Label({label: "Utilities"});
+        let title = new Gtk.Label({label: _("Utilities")});
         let page = new Gtk.Grid({margin: 10, vexpand: true});
 
         // hide indicator switcher
@@ -100,7 +103,7 @@ const SettingsWidget = new GObject.Class({
         }));
         page.attach(indicatorSwitcher, 1, 0, 1, 1);
         page.attach(new Gtk.Label({
-            label: "Show extension's indicator",
+            label: _("Show extension's indicator"),
             hexpand: true,
             halign: Gtk.Align.START
         }), 0, 0, 1, 1);
@@ -115,7 +118,7 @@ const SettingsWidget = new GObject.Class({
         }));
         page.attach(usernameSwitcher, 1, 1, 1, 1);
         page.attach(new Gtk.Label({
-            label: "Show username",
+            label: _("Show username"),
             hexpand: true,
             halign: Gtk.Align.START
         }), 0, 1, 1, 1);
@@ -126,7 +129,7 @@ const SettingsWidget = new GObject.Class({
 
 
 function init() {
-    Convenience.initTranslations();
+    Convenience.initTranslations("org.gnome.shell.extensions.icon-hider");
 }
 
 
