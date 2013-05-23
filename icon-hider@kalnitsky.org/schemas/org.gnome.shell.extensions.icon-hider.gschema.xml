@@ -13,7 +13,7 @@
     </key>
 
     <key type="as" name="exceptions">
-      <default>['battery', 'message-notifier']</default>
+      <default>['message-notifier']</default>
       <summary>Not show this icons in the Icon Hider list.</summary>
     </key>
 

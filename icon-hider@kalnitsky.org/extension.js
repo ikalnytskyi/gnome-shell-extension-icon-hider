@@ -14,7 +14,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Icon Hider Extension.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Icon Hider Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
 const Lang = imports.lang;
@@ -141,6 +141,7 @@ Extension.prototype = {
     _init: function() {
         this._indicator = null;
         this._settings = Convenience.getSettings();
+        this._traymanager = Main.statusIconDispatcher;
 
         if (Main.panel._statusArea) {
             this._shellVersion = "3.4";
@@ -153,6 +154,7 @@ Extension.prototype = {
 
     enable: function() {
         // load visibility
+        this._hiddenIndicators = [];
         this._refreshIndicators();
 
         // create indicator
@@ -170,9 +172,12 @@ Extension.prototype = {
             ? this._statusArea.userMenu._name.show()
             : this._statusArea.userMenu._name.hide();
 
-        // save signal id (should be used for disconnecting in `destroy()`)
-        this._settingsSignal =
-            this._settings.connect('changed::', Lang.bind(this, this._reloadSettings));
+        // call `this._reloadSettings` if settings or tray icons was changed
+        let reload = Lang.bind(this, this._reloadSettings);
+
+        this._settingsId = this._settings.connect('changed::', reload);
+        this._statusAddedId = this._traymanager.connect('status-icon-added', reload);
+        this._statusRemovedId = this._traymanager.connect('status-icon-removed', reload);
     },
 
     /**
@@ -190,7 +195,19 @@ Extension.prototype = {
 
         this._indicator.destroy();
         this._indicator = null;
-        this._settings.disconnect(this._settingsSignal);
+
+        this._settings.disconnect(this._settingsId);
+        this._traymanager.disconnect(this._statusAddedId);
+        this._traymanager.disconnect(this._statusRemovedId);
+
+        // disconnect per-actor handlers
+        for each (let value in this._hiddenIndicators)
+        {
+            let item = value['item'];
+            let id = value['id'];
+
+            this._statusArea[item].actor.disconnect(id);
+        }
     },
 
     /**
@@ -223,6 +240,21 @@ Extension.prototype = {
             hiddenItems.indexOf(item) != -1
                 ? this._statusArea[item].actor.hide()
                 : this._statusArea[item].actor.show();
+
+
+            if (hiddenItems.indexOf(item) != -1)
+            {
+                let id = this._statusArea[item].actor.connect('notify::visible',
+                    Lang.bind(this, function(actor) {
+                        actor.hide();
+                    }
+                ));
+
+                this._hiddenIndicators.push({
+                    'item': item,
+                    'id': id
+                });
+            }
         }
 
         if (isKnownItemsChanged)
