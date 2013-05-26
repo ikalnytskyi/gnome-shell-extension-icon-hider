@@ -30,7 +30,6 @@ const _ = imports.gettext.domain(Me.metadata['gettext-domain']).gettext;
 const GSETTINGS = {
     HIDDEN:             'hidden',
     KNOWN:              'known',
-    EXCEPTIONS:         'exceptions',
     IS_INDICATOR_SHOWN: 'is-indicator-shown',
     IS_USERNAME_SHOWN:  'is-username-shown'
 };

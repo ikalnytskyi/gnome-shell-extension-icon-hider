@@ -12,11 +12,6 @@
       <summary>Show this icons in the preferences dialog.</summary>
     </key>
 
-    <key type="as" name="exceptions">
-      <default>['battery', 'message-notifier']</default>
-      <summary>Not show this icons in the Icon Hider list.</summary>
-    </key>
-
     <key type="b" name="is-indicator-shown">
       <default>true</default>
       <summary>Show or not the extension's indicator in the top panel.</summary>
