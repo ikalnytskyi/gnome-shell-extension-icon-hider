@@ -32,7 +32,6 @@ const EXTENSION_NAME = 'Icon Hider';
 const GSETTINGS = {
     HIDDEN:             'hidden',
     KNOWN:              'known',
-    EXCEPTIONS:         'exceptions',
     IS_INDICATOR_SHOWN: 'is-indicator-shown',
     IS_USERNAME_SHOWN:  'is-username-shown'
 };
@@ -222,12 +221,10 @@ Extension.prototype = {
         // load visibility
         let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
         let knownItems = this._settings.get_strv(GSETTINGS.KNOWN);
-        let exceptionsItems = this._settings.get_strv(GSETTINGS.EXCEPTIONS);
 
         let isKnownItemsChanged = false;
         for (let item in this._statusArea) {
-            // skip exceptions (this items don't works correctly)
-            if (exceptionsItems.indexOf(item) != -1 || item === EXTENSION_NAME)
+            if (item === EXTENSION_NAME)
                 continue;
 
             // add to known icons (used by prefs.js and indicator)

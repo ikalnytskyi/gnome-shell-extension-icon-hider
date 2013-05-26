@@ -27,7 +27,6 @@ const Convenience = Me.imports.convenience;
 const GSETTINGS = {
     HIDDEN:             'hidden',
     KNOWN:              'known',
-    EXCEPTIONS:         'exceptions',
     IS_INDICATOR_SHOWN: 'is-indicator-shown',
     IS_USERNAME_SHOWN:  'is-username-shown'
 };
