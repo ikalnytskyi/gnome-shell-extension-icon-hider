@@ -7,9 +7,6 @@ desired item.
 
 .. image:: https://extensions.gnome.org/static/extension-data/screenshots/screenshot_351_1.png
 
-.. note:: This extension can't hide the ``battery`` icon, because last one
-    has a very ugly design with strange behaviour.
-
 If you don't want to see the extension's icon you always can hide it
 through preferences dialog. In the addition you can hide the username
 through preferences dialog too.
@@ -44,6 +41,6 @@ Info
 
 * **Author:** Igor Kalnitsky <igor@kalnitsky.org>
 * **License:** GNU GPL v3
-* **Version:** 3
+* **Version:** 9
 
 .. _`Gnome Shell`: http://live.gnome.org/GnomeShell
