@@ -26,8 +26,7 @@ const PanelMenu = imports.ui.panelMenu;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 
-const Gettext = imports.gettext.domain('org.gnome.shell.extensions.icon-hider');
-const _ = Gettext.gettext;
+const _ = imports.gettext.domain(Me.metadata['gettext-domain']).gettext;
 
 // global consts
 const EXTENSION_NAME = 'Icon Hider';
@@ -239,6 +238,6 @@ Extension.prototype = {
  * Should return an object with callable `enable` and `disable` properties.
  */
 function init() {
-    Convenience.initTranslations("org.gnome.shell.extensions.icon-hider");
+    Convenience.initTranslations();
     return new Extension();
 }

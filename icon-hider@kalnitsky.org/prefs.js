@@ -24,8 +24,8 @@ const Lang = imports.lang;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 
-const Gettext = imports.gettext.domain('org.gnome.shell.extensions.icon-hider');
-const _ = Gettext.gettext;
+const _ = imports.gettext.domain(Me.metadata['gettext-domain']).gettext;
+
 
 const GSETTINGS = {
     HIDDEN:             'hidden',
@@ -90,7 +90,7 @@ const SettingsWidget = new GObject.Class({
 
 
     _initUtilitiesTab: function(notebook) {
-        let title = new Gtk.Label({label: _("Utilities")});
+        let title = new Gtk.Label({label: _("Utils")});
         let page = new Gtk.Grid({margin: 10, vexpand: true});
 
         // hide indicator switcher
@@ -129,7 +129,7 @@ const SettingsWidget = new GObject.Class({
 
 
 function init() {
-    Convenience.initTranslations("org.gnome.shell.extensions.icon-hider");
+    Convenience.initTranslations();
 }
 
 
