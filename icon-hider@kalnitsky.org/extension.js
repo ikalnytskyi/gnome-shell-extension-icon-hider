@@ -19,12 +19,12 @@
 
 const Lang = imports.lang;
 const Main = imports.ui.main;
-const Mainloop = imports.mainloop;
 const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
 
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
+const _compat = Me.imports._compat;
 
 const _ = imports.gettext.domain(Me.metadata['gettext-domain']).gettext;
 
@@ -56,10 +56,8 @@ Indicator.prototype = {
     /**
      * Constructor
      */
-    _init: function() {
-        arguments[0] == "3.4" // check the shell version
-            ? PanelMenu.SystemStatusButton.prototype._init.call(this, 'view-grid')
-            : PanelMenu.SystemStatusButton.prototype._init.call(this, 'view-grid-symbolic');
+    _init: function(icon) {
+        PanelMenu.SystemStatusButton.prototype._init.call(this, icon);
         Main.panel.addToStatusArea(EXTENSION_NAME, this);
 
         this._settings = Convenience.getSettings();
@@ -143,13 +141,7 @@ Extension.prototype = {
         this._settings = Convenience.getSettings();
         this._traymanager = Main.statusIconDispatcher;
 
-        if (Main.panel._statusArea) {
-            this._shellVersion = "3.4";
-            this._statusArea = Main.panel._statusArea;
-        } else {
-            this._shellVersion = "3.6";
-            this._statusArea = Main.panel.statusArea;
-        }
+        this._statusArea = _compat.statusArea();
     },
 
     enable: function() {
@@ -158,7 +150,7 @@ Extension.prototype = {
         this._refreshIndicators();
 
         // create indicator
-        this._indicator = new Indicator(this._shellVersion);
+        this._indicator = new Indicator(_compat.indicatorIcon());
 
         // load utilities settings
         let isIndicatorShown = this._settings.get_boolean(GSETTINGS.IS_INDICATOR_SHOWN);
