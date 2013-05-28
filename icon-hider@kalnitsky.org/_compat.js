@@ -38,3 +38,13 @@ function indicatorIcon() {
     // for Gnome Shell > 3.4
     return 'view-grid-symbolic';
 }
+
+
+function trayManager() {
+    // for Gnome Shell 3.4
+    if (Main.panel._statusArea)
+        return Main.statusIconDispatcher._traymanager;
+
+    // for Gnome Shell > 3.4
+    return Main.notificationDaemon._trayManager;
+}

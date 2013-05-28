@@ -19,7 +19,6 @@
 
 const Lang = imports.lang;
 const Main = imports.ui.main;
-const Shell = imports.gi.Shell;
 const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
 
@@ -142,10 +141,7 @@ Extension.prototype = {
     _init: function() {
         this._indicator = null;
         this._settings = Convenience.getSettings();
-
-        this._traymanager = new Shell.TrayManager();
-        this._traymanager.manage_stage(global.stage, Main.messageTray.actor);
-
+        this._traymanager = _compat.trayManager();
         this._statusArea = _compat.statusArea();
     },
 
