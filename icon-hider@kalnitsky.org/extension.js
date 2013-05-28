@@ -151,7 +151,7 @@ Extension.prototype = {
 
     enable: function() {
         // load visibility
-        this._hiddenIndicators = [];
+        this._actorSignals = [];
         this._refreshIndicators();
 
         // create indicator
@@ -184,27 +184,24 @@ Extension.prototype = {
      *   - destroy indicator
      */
     disable: function() {
+        // disconnect global handlers
+        this._settings.disconnect(this._settingsId);
+        this._traymanager.disconnect(this._trayAddedId);
+        this._traymanager.disconnect(this._trayRemovedId);
+
+        // disconnect per-actor handlers
+        for each (let signal in this._actorSignals)
+            this._statusArea[signal['item']].actor.disconnect(signal['id']);
+
         // restore visibility
         let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
         for each (let item in hiddenItems)
             if (item in this._statusArea)
                 this._statusArea[item].actor.show();
 
+        // destroy extension indicator
         this._indicator.destroy();
         this._indicator = null;
-
-        this._settings.disconnect(this._settingsId);
-        this._traymanager.disconnect(this._trayAddedId);
-        this._traymanager.disconnect(this._trayRemovedId);
-
-        // disconnect per-actor handlers
-        for each (let value in this._hiddenIndicators)
-        {
-            let item = value['item'];
-            let id = value['id'];
-
-            this._statusArea[item].actor.disconnect(id);
-        }
     },
 
     /**
@@ -222,6 +219,7 @@ Extension.prototype = {
 
         let isKnownItemsChanged = false;
         for (let item in this._statusArea) {
+            // skip the extension indicator
             if (item === EXTENSION_NAME)
                 continue;
 
@@ -232,23 +230,19 @@ Extension.prototype = {
             }
 
             // set icon visibility
-            hiddenItems.indexOf(item) != -1
-                ? this._statusArea[item].actor.hide()
-                : this._statusArea[item].actor.show();
-
-
-            if (hiddenItems.indexOf(item) != -1)
-            {
-                let id = this._statusArea[item].actor.connect('notify::visible',
+            if (hiddenItems.indexOf(item) != -1) {
+                // hide actor after each visible updates
+                let signalId = this._statusArea[item].actor.connect(
+                    'notify::visible',
                     Lang.bind(this, function(actor) {
                         actor.hide();
-                    }
-                ));
+                    })
+                );
 
-                this._hiddenIndicators.push({
-                    'item': item,
-                    'id': id
-                });
+                this._actorSignals.push({'id': signalId, 'item': item});
+                this._statusArea[item].actor.hide()
+            } else {
+                this._statusArea[item].actor.show();
             }
         }
 
