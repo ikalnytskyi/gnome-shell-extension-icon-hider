@@ -19,13 +19,16 @@
 
 const Lang = imports.lang;
 const Main = imports.ui.main;
+const Shell = imports.gi.Shell;
 const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
 
+// extension-level modules
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
 const _compat = Me.imports._compat;
 
+// gettext alias
 const _ = imports.gettext.domain(Me.metadata['gettext-domain']).gettext;
 
 // global consts
@@ -139,7 +142,9 @@ Extension.prototype = {
     _init: function() {
         this._indicator = null;
         this._settings = Convenience.getSettings();
-        this._traymanager = Main.statusIconDispatcher;
+
+        this._traymanager = new Shell.TrayManager();
+        this._traymanager.manage_stage(global.stage, Main.messageTray.actor);
 
         this._statusArea = _compat.statusArea();
     },
@@ -168,8 +173,8 @@ Extension.prototype = {
         let reload = Lang.bind(this, this._reloadSettings);
 
         this._settingsId = this._settings.connect('changed::', reload);
-        this._statusAddedId = this._traymanager.connect('status-icon-added', reload);
-        this._statusRemovedId = this._traymanager.connect('status-icon-removed', reload);
+        this._trayAddedId = this._traymanager.connect('tray-icon-added', reload);
+        this._trayRemovedId = this._traymanager.connect('tray-icon-removed', reload);
     },
 
     /**
@@ -189,8 +194,8 @@ Extension.prototype = {
         this._indicator = null;
 
         this._settings.disconnect(this._settingsId);
-        this._traymanager.disconnect(this._statusAddedId);
-        this._traymanager.disconnect(this._statusRemovedId);
+        this._traymanager.disconnect(this._trayAddedId);
+        this._traymanager.disconnect(this._trayRemovedId);
 
         // disconnect per-actor handlers
         for each (let value in this._hiddenIndicators)
