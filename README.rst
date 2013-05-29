@@ -34,13 +34,13 @@ The first one:
 The second one:
 
 #. Go to the http://extensions.gnome.org/extension/351/icon-hider/ and install
-   it through web interface.
+   it through web interface. (**currently, not up-to-date**)
 
 Info
 ----
 
 * **Author:** Igor Kalnitsky <igor@kalnitsky.org>
 * **License:** GNU GPL v3
-* **Version:** 9
+* **Version:** 10
 
 .. _`Gnome Shell`: http://live.gnome.org/GnomeShell
