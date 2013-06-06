@@ -34,7 +34,7 @@ The first one:
 The second one:
 
 #. Go to the http://extensions.gnome.org/extension/351/icon-hider/ and install
-   it through web interface. (**currently, not up-to-date**)
+   it through web interface.
 
 Info
 ----
