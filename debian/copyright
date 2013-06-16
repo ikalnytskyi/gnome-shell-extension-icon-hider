@@ -3,13 +3,12 @@ Upstream-Name: gnome-shell-extension-icon-hider
 Upstream-Contact: 2013 Igor Kalnitsky <igor@kalnitsky.org>
 Source: https://github.com/ikalnitsky/gnome-shell-extension-icon-hider
 
-Files: *
 Copyright: 2012 Igor Kalnitsky <igor@kalnitsky.org>
 License: GPL-3.0+
 
 Files: icon-hider@kalnitsky.org/convenience.js
 Copyright: 2011-2012 Giovanni Campagna <scampa.giovanni@gmail.com>
-License: BSD 3-Clause
+License: BSD
 
 License: GPL-3.0+
  Icon Hider is free software: you can redistribute it and/or modify
@@ -27,3 +26,7 @@ License: GPL-3.0+
  .
  On Debian systems, the complete text of the GNU General
  Public License version 3 can be found in "/usr/share/common-licenses/GPL-3".
+
+License: BSD
+ On Debian systems, the complete text of the BSD license can be found
+ in "/usr/share/common-licenses/BSD".

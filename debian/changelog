@@ -1,5 +1,5 @@
-gnome-shell-extension-icon-hider (1.0-1) UNRELEASED; urgency=low
+gnome-shell-extension-icon-hider (10-1) unstable; urgency=low
 
-  * Initial release.
+  * Initial release. Closes: #712478.
 
- -- Igor Kalnitsky <igor@kalnitsky.org>  Thu, 13 Jun 2013 02:10:53 +0300
+ -- Igor Kalnitsky <igor@kalnitsky.org>  Thu, 16 Jun 2013 13:23:53 +0300

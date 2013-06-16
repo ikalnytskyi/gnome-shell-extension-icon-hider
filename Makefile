@@ -18,12 +18,11 @@
 #
 
 # installation helpers
-PREFIX=${DESTDIR}/usr/share
-INSTALLPATH=${PREFIX}/gnome-shell/extensions/
+EXTENSIONSPATH=${DESTDIR}/usr/share/gnome-shell/extensions/
 
 # package helpers
 PACKAGE=gnome-shell-extension-icon-hider
-VERSION=1.0
+VERSION=20130615
 ARCHIVE=${PACKAGE}_${VERSION}.orig.tar.gz
 
 
@@ -33,14 +32,14 @@ _start: help
 
 # install extension
 install:
-	mkdir -p ${INSTALLPATH}
-	cp -r icon-hider@kalnitsky.org/ ${INSTALLPATH}
+	mkdir -p ${EXTENSIONSPATH}
+	cp -r icon-hider@kalnitsky.org/ ${EXTENSIONSPATH}
 
 
 # build debian package
 deb:
-	tar -cvzf ../${ARCHIVE} .
-	debuild -us -uc
+	#tar -cvzf ../${ARCHIVE} .
+	debuild -b -tc
 
 
 # print usage info

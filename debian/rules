@@ -2,5 +2,11 @@
 %:
 	dh $@
 
+
+# skip the `dh_auto_build` step
+override_dh_auto_build:
+
+
+# copy an extension to the gnome extensions path
 override_dh_auto_install:
 	$(MAKE) DESTDIR=$$(pwd)/debian/gnome-shell-extension-icon-hider install
