@@ -1,0 +1,39 @@
+#
+# Localization file for Russian.
+#
+# Copyright (C) 2013 Igor Kalnitsky
+# This file is distributed under the GPLv3 license.
+# Igor Kalnitsky <igor@kalnitsky.org>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Icon Hider\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-19 13:43+0200\n"
+"PO-Revision-Date: 2013-07-19 13:47+0100\n"
+"Last-Translator: Igor Kalnitsky <igor@kalnitsky.org>\n"
+"Language-Team: Russian <igor@kalnitsky.org>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: prefs.js:55
+msgid "Show/Hide icons"
+msgstr "Показать/спрятать иконки"
+
+#: prefs.js:92
+msgid "Utils"
+msgstr "Утилиты"
+
+#: prefs.js:105
+msgid "Show extension's indicator"
+msgstr "Отображать иконку расширения"
+
+#: prefs.js:120
+msgid "Show username"
+msgstr "Отображать имя пользователя"
+
+#: extension.js:96
+msgid "Settings"
+msgstr "Настройки"
