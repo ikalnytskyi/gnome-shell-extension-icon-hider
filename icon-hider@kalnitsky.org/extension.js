@@ -17,17 +17,15 @@
  * along with Icon Hider Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+const Me = imports.misc.extensionUtils.getCurrentExtension();
+
+const St = imports.gi.St;
 const Lang = imports.lang;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
-
-// extension-level modules
-const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Convenience = Me.imports.convenience;
-const _compat = Me.imports._compat;
 
-// gettext alias
 const _ = imports.gettext.domain(Me.metadata['gettext-domain']).gettext;
 
 // global consts
@@ -35,8 +33,7 @@ const EXTENSION_NAME = 'Icon Hider';
 const GSETTINGS = {
     HIDDEN:             'hidden',
     KNOWN:              'known',
-    IS_INDICATOR_SHOWN: 'is-indicator-shown',
-    IS_USERNAME_SHOWN:  'is-username-shown'
+    IS_INDICATOR_SHOWN: 'is-indicator-shown'
 };
 
 
@@ -47,19 +44,21 @@ const GSETTINGS = {
  * visiblity of other icons.
  */
 
-function Indicator() {
-    this._init.apply(this, arguments);
-}
-
-
-Indicator.prototype = {
-    __proto__: PanelMenu.SystemStatusButton.prototype,
+const Indicator = new Lang.Class({
+    Name: 'Indicator',
+    Extends: PanelMenu.Button,
 
     /**
      * Constructor
      */
     _init: function(icon) {
-        PanelMenu.SystemStatusButton.prototype._init.call(this, icon);
+        this.parent(0.0, _('Icon-Hider'));
+
+        this.actor.add_actor(new St.Icon({
+            icon_name: icon,
+            style_class: 'popup-menu-icon'
+        }));
+
         Main.panel.addToStatusArea(EXTENSION_NAME, this);
 
         this._settings = Convenience.getSettings();
@@ -126,7 +125,7 @@ Indicator.prototype = {
             index = hiddenItems.indexOf(item.statusAreaKey);
         }
     }
-}
+});
 
 
 /*
@@ -141,8 +140,8 @@ Extension.prototype = {
     _init: function() {
         this._indicator = null;
         this._settings = Convenience.getSettings();
-        this._traymanager = _compat.trayManager();
-        this._statusArea = _compat.statusArea();
+        this._traymanager = Main.notificationDaemon._trayManager;
+        this._statusArea = Main.panel.statusArea;
     },
 
     enable: function() {
@@ -151,19 +150,14 @@ Extension.prototype = {
         this._refreshIndicators();
 
         // create indicator
-        this._indicator = new Indicator(_compat.indicatorIcon());
+        this._indicator = new Indicator('view-grid-symbolic');
 
         // load utilities settings
         let isIndicatorShown = this._settings.get_boolean(GSETTINGS.IS_INDICATOR_SHOWN);
-        let isUsernameShown = this._settings.get_boolean(GSETTINGS.IS_USERNAME_SHOWN);
 
         isIndicatorShown
             ? this._indicator.actor.show()
             : this._indicator.actor.hide();
-
-        isUsernameShown
-            ? this._statusArea.userMenu._name.show()
-            : this._statusArea.userMenu._name.hide();
 
         // call `this._reloadSettings` if settings or tray icons was changed
         let reload = Lang.bind(this, this._reloadSettings);

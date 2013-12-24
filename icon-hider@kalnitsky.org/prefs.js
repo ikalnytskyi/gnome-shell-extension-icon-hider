@@ -30,8 +30,7 @@ const _ = imports.gettext.domain(Me.metadata['gettext-domain']).gettext;
 const GSETTINGS = {
     HIDDEN:             'hidden',
     KNOWN:              'known',
-    IS_INDICATOR_SHOWN: 'is-indicator-shown',
-    IS_USERNAME_SHOWN:  'is-username-shown'
+    IS_INDICATOR_SHOWN: 'is-indicator-shown'
 };
 
 
@@ -106,21 +105,6 @@ const SettingsWidget = new GObject.Class({
             hexpand: true,
             halign: Gtk.Align.START
         }), 0, 0, 1, 1);
-
-        //// hide username switcher
-        let isUsernameShown = this._settings.get_boolean(GSETTINGS.IS_USERNAME_SHOWN);
-        let usernameSwitcher = new Gtk.Switch({active: isUsernameShown});
-        usernameSwitcher.connect('notify::active', Lang.bind(this, function (button) {
-            button.active
-                ? this._settings.set_boolean(GSETTINGS.IS_USERNAME_SHOWN, true)
-                : this._settings.set_boolean(GSETTINGS.IS_USERNAME_SHOWN, false);
-        }));
-        page.attach(usernameSwitcher, 1, 1, 1, 1);
-        page.attach(new Gtk.Label({
-            label: _("Show username"),
-            hexpand: true,
-            halign: Gtk.Align.START
-        }), 0, 1, 1, 1);
 
         notebook.append_page(page, title);
     }

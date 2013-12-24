@@ -8,15 +8,14 @@ desired item.
 .. image:: https://extensions.gnome.org/static/extension-data/screenshots/screenshot_351_1.png
 
 If you don't want to see the extension's icon you always can hide it
-through preferences dialog. In the addition you can hide the username
-through preferences dialog too.
+through preferences dialog.
 
 
 Requirements
 ------------
 
-**Icon Hider** require «gnome-shell 3.4» or higher. This is due to the fact that
-the extension uses the «settings api» which introduced in «gnome-shell 3.4».
+**Icon Hider** require «gnome-shell 3.10» or higher. For older versions,
+please feel free to use the previous release.
 
 
 Installation
@@ -41,6 +40,6 @@ Info
 
 * **Author:** Igor Kalnitsky <igor@kalnitsky.org>
 * **License:** GNU GPL v3
-* **Version:** 10
+* **Version:** 11
 
 .. _`Gnome Shell`: http://live.gnome.org/GnomeShell
