@@ -17,23 +17,28 @@
  * along with Icon Hider Extension.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const Gtk = imports.gi.Gtk;
-const GObject = imports.gi.GObject;
-const Lang = imports.lang;
-
+// extension root object
 const Me = imports.misc.extensionUtils.getCurrentExtension();
+
+// aliases for used modules
+const Gtk = imports.gi.Gtk;
+const Lang = imports.lang;
+const GObject = imports.gi.GObject;
 const Convenience = Me.imports.convenience;
 
-const _ = imports.gettext.domain(Me.metadata['gettext-domain']).gettext;
+// gettext alias
+const _ = imports.gettext.gettext;
+
+// import settings module
+const _config = Me.imports._config;
 
 
-const GSETTINGS = {
-    HIDDEN:             'hidden',
-    KNOWN:              'known',
-    IS_INDICATOR_SHOWN: 'is-indicator-shown'
-};
-
-
+/**
+ * SettingsWidget is a GTK widget, which displays extension's settings.
+ * It includes the two tabs:
+ *    - indicator tab;
+ *    - util tab.
+ */
 const SettingsWidget = new GObject.Class({
     Name: 'IconHider.Prefs.SettingsWidget',
     GTypeName: 'IconHiderSettingsWidget',
@@ -54,8 +59,8 @@ const SettingsWidget = new GObject.Class({
         let title = new Gtk.Label({label: _("Show/Hide icons")});
         let page = new Gtk.Grid({margin: 10, vexpand: true});
 
-        let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
-        let knownItems = this._settings.get_strv(GSETTINGS.KNOWN);
+        let hiddenItems = this._settings.get_strv(_config.GSETTINGS_HIDDEN);
+        let knownItems = this._settings.get_strv(_config.GSETTINGS_KNOWN);
 
         let row = 0;
         for each (let item in knownItems) {
@@ -63,7 +68,7 @@ const SettingsWidget = new GObject.Class({
             switcher.item = item;
 
             switcher.connect('notify::active', Lang.bind(this, function (button) {
-                let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
+                let hiddenItems = this._settings.get_strv(_config.GSETTINGS_HIDDEN);
 
                 if (button.active && hiddenItems.indexOf(button.item) != -1)
                     hiddenItems.splice(hiddenItems.indexOf(button.item), 1);
@@ -71,7 +76,7 @@ const SettingsWidget = new GObject.Class({
                 if (!button.active && hiddenItems.indexOf(button.item) == -1)
                     hiddenItems.push(button.item);
 
-                this._settings.set_strv(GSETTINGS.HIDDEN, hiddenItems);
+                this._settings.set_strv(_config.GSETTINGS_HIDDEN, hiddenItems);
             }));
 
             // add row to switchers box
@@ -92,12 +97,10 @@ const SettingsWidget = new GObject.Class({
         let page = new Gtk.Grid({margin: 10, vexpand: true});
 
         // hide indicator switcher
-        let isIndicatorShown = this._settings.get_boolean(GSETTINGS.IS_INDICATOR_SHOWN);
+        let isIndicatorShown = this._settings.get_boolean(_config.GSETTINGS_ISINDICATORSHOWN);
         let indicatorSwitcher = new Gtk.Switch({active: isIndicatorShown});
         indicatorSwitcher.connect('notify::active', Lang.bind(this, function (button) {
-            button.active
-                ? this._settings.set_boolean(GSETTINGS.IS_INDICATOR_SHOWN, true)
-                : this._settings.set_boolean(GSETTINGS.IS_INDICATOR_SHOWN, false);
+            this._settings.set_boolean(_config.GSETTINGS_ISINDICATORSHOWN, button.active)
         }));
         page.attach(indicatorSwitcher, 1, 0, 1, 1);
         page.attach(new Gtk.Label({

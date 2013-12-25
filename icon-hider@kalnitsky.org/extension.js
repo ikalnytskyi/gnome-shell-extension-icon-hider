@@ -17,8 +17,10 @@
  * along with Icon Hider Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// extension root object
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
+// aliases for used modules
 const St = imports.gi.St;
 const Lang = imports.lang;
 const Main = imports.ui.main;
@@ -26,51 +28,51 @@ const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
 const Convenience = Me.imports.convenience;
 
-const _ = imports.gettext.domain(Me.metadata['gettext-domain']).gettext;
+// gettext alias
+const _ = imports.gettext.gettext;
 
-// global consts
-const EXTENSION_NAME = 'Icon Hider';
-const GSETTINGS = {
-    HIDDEN:             'hidden',
-    KNOWN:              'known',
-    IS_INDICATOR_SHOWN: 'is-indicator-shown'
-};
+// import settings module
+const _config = Me.imports._config;
 
 
 /*
- * Indicator definition.
+ * Indicator class.
  *
- * Create item in StatusArea panel. Provide menu for manipulating
+ * Creates an actor in the StatusArea panel. Provides menu for manipulating
  * visiblity of other icons.
  */
-
 const Indicator = new Lang.Class({
     Name: 'Indicator',
     Extends: PanelMenu.Button,
 
     /**
-     * Constructor
+     * Creates an actor object, which can be added to the status area,
+     *
+     * @constructor
+     * @this {Indicator}
+     * @param {string} icon an icon name
      */
     _init: function(icon) {
-        this.parent(0.0, _('Icon-Hider'));
+        this.parent(0.0, _config.EXTENSION_NAME);
 
         this.actor.add_actor(new St.Icon({
             icon_name: icon,
             style_class: 'popup-menu-icon'
         }));
 
-        Main.panel.addToStatusArea(EXTENSION_NAME, this);
-
         this._settings = Convenience.getSettings();
         this._createMenu();
     },
 
     /**
-     * Create menu in top bar.
+     * Creates menu for the Indicator. It will be popuped on RMB click.
+     *
+     * @private
+     * @this {Indicator}
      */
     _createMenu: function() {
-        let knownItems = this._settings.get_strv(GSETTINGS.KNOWN);
-        let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
+        let knownItems = this._settings.get_strv(_config.GSETTINGS_KNOWN);
+        let hiddenItems = this._settings.get_strv(_config.GSETTINGS_HIDDEN);
 
         // create switchers list
         for each (let item in knownItems) {
@@ -92,7 +94,7 @@ const Indicator = new Lang.Class({
         // create service items
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-        let settingsItem = new PopupMenu.PopupMenuItem(_("Settings"));
+        let settingsItem = new PopupMenu.PopupMenuItem(_('Settings'));
         settingsItem.connect('activate', Lang.bind(this, function() {
             var runPrefs = 'gnome-shell-extension-prefs ' + Me.metadata.uuid;
             Main.Util.trySpawnCommandLine(runPrefs);
@@ -101,27 +103,35 @@ const Indicator = new Lang.Class({
     },
 
     /**
-     * Hide element and mark it as hidden in settings.
+     * Hide element and mark it as hidden in gsettings.
+     *
+     * @private
+     * @this {Indicator}
+     * @param {object} item an item to hide
      */
     _hideItem: function (item) {
-        let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
+        let hiddenItems = this._settings.get_strv(_config.GSETTINGS_HIDDEN);
 
         if (hiddenItems.indexOf(item.statusAreaKey) == -1) {
             hiddenItems.push(item.statusAreaKey);
-            this._settings.set_strv(GSETTINGS.HIDDEN, hiddenItems);
+            this._settings.set_strv(_config.GSETTINGS_HIDDEN, hiddenItems);
         }
     },
 
     /**
-     * Show element and mark it as visible in settings.
+     * Show element and mark it as visible in gsettings.
+     *
+     * @private
+     * @this {Indicator}
+     * @param {object} item an item to show
      */
     _showItem: function (item) {
-        let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
+        let hiddenItems = this._settings.get_strv(_config.GSETTINGS_HIDDEN);
         let index = hiddenItems.indexOf(item.statusAreaKey);
 
         while (index != -1) {
             hiddenItems.splice(index, 1);
-            this._settings.set_strv(GSETTINGS.HIDDEN, hiddenItems);
+            this._settings.set_strv(_config.GSETTINGS_HIDDEN, hiddenItems);
             index = hiddenItems.indexOf(item.statusAreaKey);
         }
     }
@@ -151,9 +161,11 @@ Extension.prototype = {
 
         // create indicator
         this._indicator = new Indicator('view-grid-symbolic');
+        Main.panel.addToStatusArea(_config.EXTENSION_NAME, this._indicator);
+
 
         // load utilities settings
-        let isIndicatorShown = this._settings.get_boolean(GSETTINGS.IS_INDICATOR_SHOWN);
+        let isIndicatorShown = this._settings.get_boolean(_config.GSETTINGS_ISINDICATORSHOWN);
 
         isIndicatorShown
             ? this._indicator.actor.show()
@@ -184,7 +196,7 @@ Extension.prototype = {
             this._statusArea[signal['item']].actor.disconnect(signal['id']);
 
         // restore visibility
-        let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
+        let hiddenItems = this._settings.get_strv(_config.GSETTINGS_HIDDEN);
         for each (let item in hiddenItems)
             if (item in this._statusArea)
                 this._statusArea[item].actor.show();
@@ -204,13 +216,13 @@ Extension.prototype = {
 
     _refreshIndicators: function() {
         // load visibility
-        let hiddenItems = this._settings.get_strv(GSETTINGS.HIDDEN);
-        let knownItems = this._settings.get_strv(GSETTINGS.KNOWN);
+        let hiddenItems = this._settings.get_strv(_config.GSETTINGS_HIDDEN);
+        let knownItems = this._settings.get_strv(_config.GSETTINGS_KNOWN);
 
         let isKnownItemsChanged = false;
         for (let item in this._statusArea) {
             // skip the extension indicator
-            if (item === EXTENSION_NAME)
+            if (item === _config.EXTENSION_NAME)
                 continue;
 
             // add to known icons (used by prefs.js and indicator)
@@ -237,7 +249,7 @@ Extension.prototype = {
         }
 
         if (isKnownItemsChanged)
-            this._settings.set_strv(GSETTINGS.KNOWN, knownItems);
+            this._settings.set_strv(_config.GSETTINGS_KNOWN, knownItems);
     }
 };
 
