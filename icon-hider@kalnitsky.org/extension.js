@@ -1,20 +1,14 @@
 /*
- * Copyright 2012 Igor Kalnitsky <igor@kalnitsky.org>
+ * icon-hider@kalnitsky.org/extension.js
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
- * This file is part of Icon Hider for Gnome Shell.
+ * The main module which implements an extension itself. It creates
+ * indicator on the StatusArea and hides all disables items.
  *
- * Icon Hider is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * This file is part of Icon Hider for GNOME Shell.
  *
- * Icon Hider is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with Icon Hider Extension. If not, see <http://www.gnu.org/licenses/>.
+ * @copyright 2012 by Igor Kalnitsky <igor@kalnitsky.org>
+ * @license BSD, see LICENSE for details
  */
 
 // extension root object

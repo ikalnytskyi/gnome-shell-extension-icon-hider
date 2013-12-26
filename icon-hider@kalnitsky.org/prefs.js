@@ -1,20 +1,17 @@
 /*
- * Copyright 2012 Igor Kalnitsky <igor@kalnitsky.org>
+ * icon-hider@kalnitsky.org/prefs.js
+ * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  *
- * This file is part of Icon Hider for Gnome Shell.
+ * This module implements a helper window which is duplicate an
+ * extension's functionality with some additional util options.
  *
- * Icon Hider is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * The module could be launched from the indicator's menu or
+ * from the `gnome-tweak-tool` as the extension settings.
  *
- * Icon Hider is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * This file is part of Icon Hider for GNOME Shell.
  *
- * You should have received a copy of the GNU General Public License
- * along with Icon Hider Extension.  If not, see <http://www.gnu.org/licenses/>.
+ * @copyright 2012 by Igor Kalnitsky <igor@kalnitsky.org>
+ * @license BSD, see LICENSE for details
  */
 
 // extension root object

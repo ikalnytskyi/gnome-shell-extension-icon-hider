@@ -38,8 +38,8 @@ The second one:
 Info
 ----
 
-* **Author:** Igor Kalnitsky <igor@kalnitsky.org>
-* **License:** GNU GPL v3
-* **Version:** 11
+:Author:   Igor Kalnitsky <igor@kalnitsky.org>
+:License:  BSD, see LICENSE for details
+:Version:  11
 
 .. _`Gnome Shell`: http://live.gnome.org/GnomeShell
