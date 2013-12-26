@@ -27,7 +27,7 @@ const GObject = imports.gi.GObject;
 const Convenience = Me.imports.convenience;
 
 // gettext alias
-const _ = imports.gettext.gettext;
+const _ = imports.gettext.domain(Me.metadata['gettext-domain']).gettext;
 
 // import settings module
 const _config = Me.imports._config;
