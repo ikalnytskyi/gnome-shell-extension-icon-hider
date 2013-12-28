@@ -14,8 +14,16 @@ through preferences dialog.
 Requirements
 ------------
 
-**Icon Hider** require «gnome-shell 3.10» or higher. For older versions,
-please feel free to use the previous release.
+The table below shows the extension compatibility with GNOME Shell.
+
+=============   =================================
+   version                requirements
+=============   =================================
+     v11               GNOME Shell >= 3.10
+-------------   ---------------------------------
+     v10               GNOME Shell >= 3.4
+                       GNOME Shell <  3.10
+=============   =================================
 
 
 Installation
@@ -25,15 +33,16 @@ There are two installation ways.
 
 The first one:
 
+#. Go to the http://extensions.gnome.org/extension/351/icon-hider/ and install
+   it through web interface.
+
+The second one:
+
 #. Clone repository.
 #. Copy (or link) ``icon-hider@kalnitsky.org`` directory to
    ``~/.local/share/gnome-shell/extensions/``.
 #. Activate extension via ``gnome-tweak-tool``.
 
-The second one:
-
-#. Go to the http://extensions.gnome.org/extension/351/icon-hider/ and install
-   it through web interface.
 
 Info
 ----
