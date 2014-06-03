@@ -19,7 +19,9 @@ The table below shows the extension compatibility with GNOME Shell.
 =============   =================================
    version                requirements
 =============   =================================
-     v11               GNOME Shell >= 3.10
+     v12               GNOME Shell >= 3.10
+-------------   ---------------------------------
+     v11               GNOME Shell == 3.10
 -------------   ---------------------------------
      v10               GNOME Shell >= 3.4
                        GNOME Shell <  3.10
@@ -49,6 +51,6 @@ Info
 
 :Author:   Igor Kalnitsky <igor@kalnitsky.org>
 :License:  BSD, see LICENSE for details
-:Version:  11
+:Version:  12
 
 .. _`Gnome Shell`: http://live.gnome.org/GnomeShell

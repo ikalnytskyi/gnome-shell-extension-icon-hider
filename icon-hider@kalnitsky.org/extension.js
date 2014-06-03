@@ -25,8 +25,9 @@ const Convenience = Me.imports.convenience;
 // gettext alias
 const _ = imports.gettext.gettext;
 
-// import settings module
+// import internal modules
 const _config = Me.imports._config;
+const _compat = Me.imports._compat;
 
 
 /*
@@ -144,7 +145,7 @@ Extension.prototype = {
     _init: function() {
         this._indicator = null;
         this._settings = Convenience.getSettings();
-        this._traymanager = Main.notificationDaemon._trayManager;
+        this._traymanager = _compat.getTrayManager();
         this._statusArea = Main.panel.statusArea;
     },
 
