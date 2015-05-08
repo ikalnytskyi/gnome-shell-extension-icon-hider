@@ -19,15 +19,19 @@ The table below shows the extension compatibility with GNOME Shell.
 =============   =================================
    version                requirements
 =============   =================================
-     v13               GNOME Shell >= 3.14
+     v14               GNOME Shell >= 3.10
+                       GNOME Shell <= 3.16
+-------------   ---------------------------------
+     v13               GNOME Shell >= 3.10
+                       GNOME Shell <= 3.14
 -------------   ---------------------------------
      v12               GNOME Shell >= 3.10
-                       GNOME Shell <  3.14
+                       GNOME Shell <= 3.12
 -------------   ---------------------------------
      v11               GNOME Shell == 3.10
 -------------   ---------------------------------
      v10               GNOME Shell >= 3.4
-                       GNOME Shell <  3.10
+                       GNOME Shell <= 3.8
 =============   =================================
 
 

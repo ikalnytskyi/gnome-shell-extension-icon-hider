@@ -16,11 +16,19 @@
 function getTrayManager() {
     const Main = imports.ui.main;
 
-    let notificationDaemon = Main.notificationDaemon._fdoNotificationDaemon
-        ? Main.notificationDaemon._fdoNotificationDaemon    // GNOME Shell 3.12
-        : Main.notificationDaemon                           // GNOME Shell 3.10
-    ;
+    // various gnome versions have various tray keepers. let's find all
+    // available tray keepers and then find tray manager instance among
+    // them.
+    let trayKeepers = [
+        Main.legacyTray,                                 // GNOME Shell 3.16
+        Main.notificationDaemon._fdoNotificationDaemon,  // GNOME Shell 3.14/3.12
+        Main.notificationDaemon,                         // GNOME Shell 3.10
+    ].filter(function (item) {
+        return !!item;
+    });
 
-    // default: GNOME Shell 3.12 case
-    return notificationDaemon._trayManager;
+    // find first available tray manager instance
+    return trayKeepers.filter(function (item) {
+        return !!item._trayManager;
+    })[0]._trayManager;
 }
