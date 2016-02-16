@@ -5,6 +5,5 @@
     "description": "Show/Hide icons from top panel",
     "url": "https://github.com/ikalnitsky/gnome-shell-extension-icon-hider",
     "settings-schema": "org.gnome.shell.extensions.icon-hider",
-    "gettext-domain": "org.gnome.shell.extensions.icon-hider",
-    "version": "14"
+    "gettext-domain": "org.gnome.shell.extensions.icon-hider"
 }

@@ -14,25 +14,7 @@ through preferences dialog.
 Requirements
 ------------
 
-The table below shows the extension compatibility with GNOME Shell.
-
-=============   =================================
-   version                requirements
-=============   =================================
-     v14               GNOME Shell >= 3.10
-                       GNOME Shell <= 3.16
--------------   ---------------------------------
-     v13               GNOME Shell >= 3.10
-                       GNOME Shell <= 3.14
--------------   ---------------------------------
-     v12               GNOME Shell >= 3.10
-                       GNOME Shell <= 3.12
--------------   ---------------------------------
-     v11               GNOME Shell == 3.10
--------------   ---------------------------------
-     v10               GNOME Shell >= 3.4
-                       GNOME Shell <= 3.8
-=============   =================================
+:GNOME Shell: 3.10, 3.12, 3.14, 3.16, 3.18
 
 
 Installation
@@ -58,6 +40,5 @@ Info
 
 :Author:   Igor Kalnitsky <igor@kalnitsky.org>
 :License:  BSD, see LICENSE for details
-:Version:  13
 
 .. _`Gnome Shell`: http://live.gnome.org/GnomeShell
