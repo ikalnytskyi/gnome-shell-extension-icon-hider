@@ -1,6 +1,11 @@
 Icon Hider for Gnome Shell
 ==========================
 
+.. warning::
+
+   Icon Hider is not actively maintained, and is looking for new maintainer.
+   If you're interested in supporting this project, please let me know.
+
 **Icon Hider** is a `Gnome Shell`_ extension for managing *status area* items.
 This extension create a special menu by which you can change visibility of
 desired item.
