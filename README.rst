@@ -19,7 +19,7 @@ through preferences dialog.
 Requirements
 ------------
 
-:GNOME Shell: 3.10, 3.12, 3.14, 3.16, 3.18
+:GNOME Shell: 3.10, 3.12, 3.14, 3.16, 3.18, 3.20
 
 
 Installation
