@@ -10,7 +10,7 @@ Icon Hider for Gnome Shell
 This extension create a special menu by which you can change visibility of
 desired item.
 
-.. image:: https://extensions.gnome.org/static/extension-data/screenshots/screenshot_351_1.png
+.. image:: https://extensions.gnome.org/extension-data/screenshots/screenshot_351_1.png
 
 If you don't want to see the extension's icon you always can hide it
 through preferences dialog.
