@@ -3,6 +3,12 @@ Icon Hider for Gnome Shell
 
 .. warning::
 
+   Since GNOME Shell 3.26 status icons are not shown by default. This
+   effectively means there's no more reson to exist for extensions like
+   Icon Hider.
+
+.. warning::
+
    Icon Hider is not actively maintained, and is looking for new maintainer.
    If you're interested in supporting this project, please let me know.
 
