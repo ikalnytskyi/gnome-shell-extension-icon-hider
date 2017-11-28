@@ -21,13 +21,13 @@ const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
 const Convenience = Me.imports.convenience;
+const Shell = imports.gi.Shell;
 
 // gettext alias
 const _ = imports.gettext.gettext;
 
 // import internal modules
 const _config = Me.imports._config;
-const _compat = Me.imports._compat;
 
 
 /*
@@ -145,7 +145,7 @@ Extension.prototype = {
     _init: function() {
         this._indicator = null;
         this._settings = Convenience.getSettings();
-        this._traymanager = _compat.getTrayManager();
+        this._traymanager = new Shell.TrayManager();
         this._statusArea = Main.panel.statusArea;
     },
 
