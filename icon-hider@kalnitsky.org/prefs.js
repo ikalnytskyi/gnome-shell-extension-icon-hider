@@ -60,7 +60,7 @@ const SettingsWidget = new GObject.Class({
         let knownItems = this._settings.get_strv(_config.GSETTINGS_KNOWN);
 
         let row = 0;
-        for each (let item in knownItems) {
+        for (let item of knownItems) {
             let switcher = new Gtk.Switch({active: (hiddenItems.indexOf(item) == -1)});
             switcher.item = item;
 
