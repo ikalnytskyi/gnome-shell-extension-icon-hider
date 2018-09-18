@@ -70,7 +70,7 @@ const Indicator = new Lang.Class({
         let hiddenItems = this._settings.get_strv(_config.GSETTINGS_HIDDEN);
 
         // create switchers list
-        for each (let item in knownItems) {
+        for (let item of knownItems) {
             // create menu item
             let isHidden = (hiddenItems.indexOf(item) != -1);
             let menuItem = new PopupMenu.PopupSwitchMenuItem(item, !isHidden);
@@ -187,12 +187,12 @@ Extension.prototype = {
         this._traymanager.disconnect(this._trayRemovedId);
 
         // disconnect per-actor handlers
-        for each (let signal in this._actorSignals)
+        for (let signal of this._actorSignals)
             this._statusArea[signal['item']].actor.disconnect(signal['id']);
 
         // restore visibility
         let hiddenItems = this._settings.get_strv(_config.GSETTINGS_HIDDEN);
-        for each (let item in hiddenItems)
+        for (let item of hiddenItems)
             if (item in this._statusArea)
                 this._statusArea[item].actor.show();
 
