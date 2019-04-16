@@ -16,6 +16,7 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 // aliases for used modules
 const St = imports.gi.St;
+const GObject = imports.gi.GObject;
 const Lang = imports.lang;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
@@ -36,9 +37,8 @@ const _config = Me.imports._config;
  * Creates an actor in the StatusArea panel. Provides menu for manipulating
  * visiblity of other icons.
  */
-const Indicator = new Lang.Class({
-    Name: 'Indicator',
-    Extends: PanelMenu.Button,
+let Indicator = GObject.registerClass(
+class Indicator extends PanelMenu.Button {
 
     /**
      * Creates an actor object, which can be added to the status area,
@@ -47,8 +47,8 @@ const Indicator = new Lang.Class({
      * @this {Indicator}
      * @param {string} icon an icon name
      */
-    _init: function(icon) {
-        this.parent(0.0, _config.EXTENSION_NAME);
+    _init(icon) {
+        super._init(0.0, _config.EXTENSION_NAME);
 
         this.actor.add_actor(new St.Icon({
             icon_name: icon,
@@ -57,7 +57,7 @@ const Indicator = new Lang.Class({
 
         this._settings = Convenience.getSettings();
         this._createMenu();
-    },
+    }
 
     /**
      * Creates menu for the Indicator. It will be popuped on RMB click.
@@ -65,7 +65,7 @@ const Indicator = new Lang.Class({
      * @private
      * @this {Indicator}
      */
-    _createMenu: function() {
+    _createMenu() {
         let knownItems = this._settings.get_strv(_config.GSETTINGS_KNOWN);
         let hiddenItems = this._settings.get_strv(_config.GSETTINGS_HIDDEN);
 
@@ -95,7 +95,7 @@ const Indicator = new Lang.Class({
             Main.Util.trySpawnCommandLine(runPrefs);
         }));
         this.menu.addMenuItem(settingsItem);
-    },
+    }
 
     /**
      * Hide element and mark it as hidden in gsettings.
@@ -104,14 +104,14 @@ const Indicator = new Lang.Class({
      * @this {Indicator}
      * @param {object} item an item to hide
      */
-    _hideItem: function (item) {
+    _hideItem(item) {
         let hiddenItems = this._settings.get_strv(_config.GSETTINGS_HIDDEN);
 
         if (hiddenItems.indexOf(item.statusAreaKey) == -1) {
             hiddenItems.push(item.statusAreaKey);
             this._settings.set_strv(_config.GSETTINGS_HIDDEN, hiddenItems);
         }
-    },
+    }
 
     /**
      * Show element and mark it as visible in gsettings.
@@ -120,7 +120,7 @@ const Indicator = new Lang.Class({
      * @this {Indicator}
      * @param {object} item an item to show
      */
-    _showItem: function (item) {
+    _showItem(item) {
         let hiddenItems = this._settings.get_strv(_config.GSETTINGS_HIDDEN);
         let index = hiddenItems.indexOf(item.statusAreaKey);
 
@@ -136,35 +136,24 @@ const Indicator = new Lang.Class({
 /*
  * Extension definition.
  */
-
-function Extension() {
-    this._init();
-}
-
-Extension.prototype = {
-    _init: function() {
+class Extension {
+    constructor() {
         this._indicator = null;
         this._settings = Convenience.getSettings();
         this._traymanager = new Shell.TrayManager();
         this._statusArea = Main.panel.statusArea;
-    },
-
-    enable: function() {
-        // load visibility
         this._actorSignals = [];
+    }
+
+    enable() {
+        // load visibility
         this._refreshIndicators();
 
         // create indicator
-        this._indicator = new Indicator('view-grid-symbolic');
-        Main.panel.addToStatusArea(_config.EXTENSION_NAME, this._indicator);
-
-
-        // load utilities settings
-        let isIndicatorShown = this._settings.get_boolean(_config.GSETTINGS_ISINDICATORSHOWN);
-
-        isIndicatorShown
-            ? this._indicator.actor.show()
-            : this._indicator.actor.hide();
+        if (this._indicator === null) {
+            this._indicator = new Indicator('view-grid-symbolic');
+            Main.panel.addToStatusArea(_config.EXTENSION_NAME, this._indicator);
+        }
 
         // call `this._reloadSettings` if settings or tray icons was changed
         let reload = Lang.bind(this, this._reloadSettings);
@@ -172,7 +161,14 @@ Extension.prototype = {
         this._settingsId = this._settings.connect('changed::', reload);
         this._trayAddedId = this._traymanager.connect('tray-icon-added', reload);
         this._trayRemovedId = this._traymanager.connect('tray-icon-removed', reload);
-    },
+
+        // load utilities settings
+        let isIndicatorShown = this._settings.get_boolean(_config.GSETTINGS_ISINDICATORSHOWN);
+
+        isIndicatorShown
+            ? this._indicator.actor.show()
+            : this._indicator.actor.hide();
+    }
 
     /**
      * Clean-up:
@@ -180,15 +176,11 @@ Extension.prototype = {
      *   - disconnect settings signal
      *   - destroy indicator
      */
-    disable: function() {
+    disable(destroy=true) {
         // disconnect global handlers
         this._settings.disconnect(this._settingsId);
         this._traymanager.disconnect(this._trayAddedId);
         this._traymanager.disconnect(this._trayRemovedId);
-
-        // disconnect per-actor handlers
-        for (let signal of this._actorSignals)
-            this._statusArea[signal['item']].actor.disconnect(signal['id']);
 
         // restore visibility
         let hiddenItems = this._settings.get_strv(_config.GSETTINGS_HIDDEN);
@@ -196,20 +188,26 @@ Extension.prototype = {
             if (item in this._statusArea)
                 this._statusArea[item].actor.show();
 
-        // destroy extension indicator
-        this._indicator.destroy();
-        this._indicator = null;
-    },
+        // disconnect per-actor handlers
+        for (let signal of this._actorSignals)
+            this._statusArea[signal['item']].actor.disconnect(signal['id']);
+
+        if (destroy) {
+            // destroy extension indicator
+            this._indicator.destroy();
+            this._indicator = null;
+        }
+    }
 
     /**
      * This function is called when settings are changed.
      */
-    _reloadSettings: function() {
-        this.disable();
+    _reloadSettings() {
+        this.disable(false);
         this.enable();
-    },
+    }
 
-    _refreshIndicators: function() {
+    _refreshIndicators() {
         // load visibility
         let hiddenItems = this._settings.get_strv(_config.GSETTINGS_HIDDEN);
         let knownItems = this._settings.get_strv(_config.GSETTINGS_KNOWN);
@@ -246,7 +244,7 @@ Extension.prototype = {
         if (isKnownItemsChanged)
             this._settings.set_strv(_config.GSETTINGS_KNOWN, knownItems);
     }
-};
+}
 
 
 /**
