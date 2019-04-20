@@ -23,6 +23,7 @@ const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
 const Convenience = Me.imports.convenience;
 const Shell = imports.gi.Shell;
+const Util = imports.misc.util;
 
 // gettext alias
 const _ = imports.gettext.gettext;
@@ -91,8 +92,8 @@ class Indicator extends PanelMenu.Button {
 
         let settingsItem = new PopupMenu.PopupMenuItem(_('Settings'));
         settingsItem.connect('activate', Lang.bind(this, function() {
-            var runPrefs = 'gnome-shell-extension-prefs ' + Me.metadata.uuid;
-            Main.Util.trySpawnCommandLine(runPrefs);
+            var runPrefs = ['gnome-shell-extension-prefs', Me.metadata.uuid];
+            Util.spawn(runPrefs);
         }));
         this.menu.addMenuItem(settingsItem);
     }
