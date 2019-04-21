@@ -11,10 +11,10 @@
 
 // extension name
 // used as identifier when adding to status area
-const EXTENSION_NAME = 'Icon Hider';
+var EXTENSION_NAME = 'Icon Hider';
 
 
 // keys for access to gsettings
-const GSETTINGS_KNOWN = 'known';
-const GSETTINGS_HIDDEN = 'hidden';
-const GSETTINGS_ISINDICATORSHOWN = 'is-indicator-shown';
+var GSETTINGS_KNOWN = 'known';
+var GSETTINGS_HIDDEN = 'hidden';
+var GSETTINGS_ISINDICATORSHOWN = 'is-indicator-shown';

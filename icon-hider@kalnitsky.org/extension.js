@@ -12,7 +12,8 @@
  */
 
 // extension root object
-const Me = imports.misc.extensionUtils.getCurrentExtension();
+const ExtensionUtils = imports.misc.extensionUtils;
+const Me = ExtensionUtils.getCurrentExtension();
 
 // aliases for used modules
 const St = imports.gi.St;
@@ -21,7 +22,6 @@ const Lang = imports.lang;
 const Main = imports.ui.main;
 const PopupMenu = imports.ui.popupMenu;
 const PanelMenu = imports.ui.panelMenu;
-const Convenience = Me.imports.convenience;
 const Shell = imports.gi.Shell;
 const Util = imports.misc.util;
 
@@ -56,7 +56,7 @@ class Indicator extends PanelMenu.Button {
             style_class: 'popup-menu-icon'
         }));
 
-        this._settings = Convenience.getSettings();
+        this._settings = ExtensionUtils.getSettings();
         this._createMenu();
     }
 
@@ -140,7 +140,7 @@ class Indicator extends PanelMenu.Button {
 class Extension {
     constructor() {
         this._indicator = null;
-        this._settings = Convenience.getSettings();
+        this._settings = ExtensionUtils.getSettings();
         this._traymanager = new Shell.TrayManager();
         this._statusArea = Main.panel.statusArea;
         this._actorSignals = [];
@@ -254,6 +254,6 @@ class Extension {
  * Should return an object with callable `enable` and `disable` properties.
  */
 function init() {
-    Convenience.initTranslations();
+    ExtensionUtils.initTranslations();
     return new Extension();
 }
