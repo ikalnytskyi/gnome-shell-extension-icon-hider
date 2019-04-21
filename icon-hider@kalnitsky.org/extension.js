@@ -57,7 +57,10 @@ class Indicator extends PanelMenu.Button {
         }));
 
         this._settings = Convenience.getSettings();
-        this._createMenu();
+        // Create the menu once the layout is complete.
+        // This prevents race conditions and ensures that all present menu items
+        // are included in the list.
+        Main.layoutManager.connect('startup-complete', this._createMenu.bind(this));
     }
 
     /**
@@ -69,9 +72,14 @@ class Indicator extends PanelMenu.Button {
     _createMenu() {
         let knownItems = this._settings.get_strv(_config.GSETTINGS_KNOWN);
         let hiddenItems = this._settings.get_strv(_config.GSETTINGS_HIDDEN);
+        let currentItems = Object.keys(Main.panel.statusArea);
+
+        // Build a sorted list of switchers for the current set of menu items.
+        let switchers = knownItems.filter(x => currentItems.indexOf(x) > -1);
+        switchers.sort((key1, key2) => key1.toLowerCase() > key2.toLowerCase());
 
         // create switchers list
-        for (let item of knownItems) {
+        for (let item of switchers) {
             // create menu item
             let isHidden = (hiddenItems.indexOf(item) != -1);
             let menuItem = new PopupMenu.PopupSwitchMenuItem(item, !isHidden);
