@@ -219,6 +219,10 @@ class Extension {
             if (item === _config.EXTENSION_NAME)
                 continue;
 
+            let target = this._statusArea[item];
+            if (target == null)
+                continue;
+
             // add to known icons (used by prefs.js and indicator)
             if (knownItems.indexOf(item) == -1) {
                 knownItems.push(item);
@@ -228,7 +232,7 @@ class Extension {
             // set icon visibility
             if (hiddenItems.indexOf(item) != -1) {
                 // hide actor after each visible updates
-                let signalId = this._statusArea[item].actor.connect(
+                let signalId = target.actor.connect(
                     'notify::visible',
                     Lang.bind(this, function(actor) {
                         actor.hide();
@@ -236,9 +240,9 @@ class Extension {
                 );
 
                 this._actorSignals.push({'id': signalId, 'item': item});
-                this._statusArea[item].actor.hide()
+                target.actor.hide()
             } else {
-                this._statusArea[item].actor.show();
+                target.actor.show();
             }
         }
 
