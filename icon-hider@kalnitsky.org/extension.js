@@ -159,7 +159,7 @@ class Extension {
         // call `this._reloadSettings` if settings or tray icons was changed
         let reload = Lang.bind(this, this._reloadSettings);
 
-        this._settingsId = this._settings.connect('changed::', reload);
+        this._settingsId = this._settings.connect('changed', reload);
         this._trayAddedId = this._traymanager.connect('tray-icon-added', reload);
         this._trayRemovedId = this._traymanager.connect('tray-icon-removed', reload);
 
