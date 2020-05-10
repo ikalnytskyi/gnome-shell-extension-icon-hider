@@ -1,5 +1,5 @@
 {
-    "shell-version": ["3.32"],
+    "shell-version": ["3.36"],
     "uuid": "icon-hider@kalnitsky.org",
     "name": "Icon Hider",
     "description": "Show/Hide icons from top panel",
