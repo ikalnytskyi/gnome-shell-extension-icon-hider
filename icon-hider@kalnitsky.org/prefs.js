@@ -15,13 +15,13 @@
  */
 
 // extension root object
-const Me = imports.misc.extensionUtils.getCurrentExtension();
+const ExtensionUtils = imports.misc.extensionUtils;
+const Me = ExtensionUtils.getCurrentExtension();
 
 // aliases for used modules
 const Gtk = imports.gi.Gtk;
 const Lang = imports.lang;
 const GObject = imports.gi.GObject;
-const Convenience = Me.imports.convenience;
 
 // gettext alias
 const _ = imports.gettext.domain(Me.metadata['gettext-domain']).gettext;
@@ -43,7 +43,7 @@ const SettingsWidget = new GObject.Class({
 
     _init: function(params) {
         this.parent(params);
-        this._settings = Convenience.getSettings();
+        this._settings = ExtensionUtils.getSettings();
 
         // build UI
         let notebook = new Gtk.Notebook();
@@ -112,7 +112,7 @@ const SettingsWidget = new GObject.Class({
 
 
 function init() {
-    Convenience.initTranslations();
+    ExtensionUtils.initTranslations();
 }
 
 
