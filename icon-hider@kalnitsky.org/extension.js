@@ -51,7 +51,7 @@ class Indicator extends PanelMenu.Button {
     _init(icon) {
         super._init(0.0, _config.EXTENSION_NAME);
 
-        this.actor.add_actor(new St.Icon({
+        this.add_actor(new St.Icon({
             icon_name: icon,
             style_class: 'popup-menu-icon'
         }));
@@ -167,8 +167,8 @@ class Extension {
         let isIndicatorShown = this._settings.get_boolean(_config.GSETTINGS_ISINDICATORSHOWN);
 
         isIndicatorShown
-            ? this._indicator.actor.show()
-            : this._indicator.actor.hide();
+            ? this._indicator.show()
+            : this._indicator.hide();
     }
 
     /**
@@ -187,11 +187,11 @@ class Extension {
         let hiddenItems = this._settings.get_strv(_config.GSETTINGS_HIDDEN);
         for (let item of hiddenItems)
             if (item in this._statusArea)
-                this._statusArea[item].actor.show();
+                this._statusArea[item].show();
 
         // disconnect per-actor handlers
         for (let signal of this._actorSignals)
-            this._statusArea[signal['item']].actor.disconnect(signal['id']);
+            this._statusArea[signal['item']].disconnect(signal['id']);
 
         if (destroy) {
             // destroy extension indicator
@@ -228,7 +228,7 @@ class Extension {
             // set icon visibility
             if (hiddenItems.indexOf(item) != -1) {
                 // hide actor after each visible updates
-                let signalId = this._statusArea[item].actor.connect(
+                let signalId = this._statusArea[item].connect(
                     'notify::visible',
                     Lang.bind(this, function(actor) {
                         actor.hide();
@@ -236,9 +236,9 @@ class Extension {
                 );
 
                 this._actorSignals.push({'id': signalId, 'item': item});
-                this._statusArea[item].actor.hide()
+                this._statusArea[item].hide()
             } else {
-                this._statusArea[item].actor.show();
+                this._statusArea[item].show();
             }
         }
 
